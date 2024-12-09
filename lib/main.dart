@@ -17,8 +17,15 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  String quiz = "";
 
   Future<String> getNuberTrival() async {
     Response result = await Dio().get('http://numbersapi.com/random/trivia');
@@ -36,12 +43,12 @@ class HomePage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Expanded(
+            Expanded(
               child: Center(
                 child: Text(
-                  "Number",
+                  quiz,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 28,
                     color: Colors.white,
                   ),
@@ -52,8 +59,11 @@ class HomePage extends StatelessWidget {
             SizedBox(
               height: 42,
               child: ElevatedButton(
-                onPressed: () {
-                  getNuberTrival();
+                onPressed: () async {
+                  String trivia = await getNuberTrival();
+                  setState(() {
+                    quiz = trivia;
+                  });
                 },
                 style: ButtonStyle(
                     backgroundColor: WidgetStateProperty.all(Colors.white)),
